@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:textSize="14sp"
-        android:textColor="@android:color/black"
         android:paddingEnd="8dp" />
 
     <!-- Second Column: Birthday in DD/MM format -->
@@ -23,6 +22,5 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="14sp"
-        android:textColor="@android:color/black"
         android:gravity="center" />
 </LinearLayout>
