@@ -1,5 +1,6 @@
 package com.example.howold // com.example.howold.MainActivity.kt
 import DatabaseHelper
+import PersonEntry
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -14,6 +15,10 @@ import java.util.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.app.AlertDialog
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
 
 // <a href="https://www.flaticon.com/free-icons/cake"
 // title="cake icons">Cake icons created by Freepik - Flaticon</a>
@@ -25,11 +30,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dobInput: EditText
     private lateinit var addPersonButton: Button
     private lateinit var ageList: ListView
-    private lateinit var adapter: ArrayAdapter<String>
     private lateinit var addPersonFAB: FloatingActionButton
     private lateinit var addPersonLayout: LinearLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private val peopleDisplayList = mutableListOf<String>() // Holds the formatted name - age strings
+    private val peopleDisplayList = mutableListOf<PersonEntry>()
+    private lateinit var adapter: PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
         // Initialize ArrayAdapter for the ListView
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, peopleDisplayList)
+        adapter = PersonAdapter(this, peopleDisplayList)
         ageList.adapter = adapter
 
         // Load existing data into the ListView
@@ -59,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         // Set up long-click listener to remove a person
         ageList.setOnItemLongClickListener { _, _, position, _ ->
             val personInfo = peopleDisplayList[position]
-            val personName = personInfo.substringBefore(" is ") // Extract the name part
+            val personName = personInfo.nameAndAge.substringBefore(" is ") // Extract the name part
             showDeleteConfirmationDialog(personName)
             true // Indicate that the long-click event was handled
         }
@@ -119,12 +124,31 @@ class MainActivity : AppCompatActivity() {
 
         peopleList.forEach { (name, dob) ->
             val ageText = calculateAge(dob)
-            peopleDisplayList.add("$name is $ageText")
+            val birthdayFormatted =
+                dob.substring(8, 10).replaceFirst("^0+(?!$)", "") +
+                        "/" + dob.substring(5, 7).replaceFirst("^0+(?!$)", "")
+            peopleDisplayList.add(PersonEntry("$name is $ageText", birthdayFormatted))
         }
-
         adapter.notifyDataSetChanged()
     }
+    // Custom ArrayAdapter for PersonEntry
+    inner class PersonAdapter(context: Context, private val people: List<PersonEntry>) :
+        ArrayAdapter<PersonEntry>(context, 0, people) {
 
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val itemView = convertView ?: LayoutInflater.from(context)
+                .inflate(R.layout.list_item_person, parent, false)
+            val person = people[position]
+
+            val nameAgeTextView = itemView.findViewById<TextView>(R.id.nameAgeTextView)
+            val birthdayTextView = itemView.findViewById<TextView>(R.id.birthdayTextView)
+
+            nameAgeTextView.text = person.nameAndAge
+            birthdayTextView.text = person.birthdayFormatted
+
+            return itemView
+        }
+    }
     private fun showDeleteConfirmationDialog(name: String) {
         AlertDialog.Builder(this)
             .setTitle("Delete Person")

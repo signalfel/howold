@@ -1,0 +1,1 @@
+data class PersonEntry(val nameAndAge: String, val birthdayFormatted: String)
