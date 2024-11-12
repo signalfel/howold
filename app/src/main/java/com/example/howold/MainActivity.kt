@@ -19,6 +19,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import java.text.ParseException
 
 // <a href="https://www.flaticon.com/free-icons/cake"
 // title="cake icons">Cake icons created by Freepik - Flaticon</a>
@@ -90,18 +91,30 @@ class MainActivity : AppCompatActivity() {
     private fun addPerson() {
         val name = nameInput.text.toString().trim()
         val dob = dobInput.text.toString().trim()
+        var result = -1L
 
         if (name.isEmpty() || dob.isEmpty()) {
-            Toast.makeText(this, "Please enter both name and date of birth", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter both name and date of birth",
+                Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Insert the person into the database
-        val result = databaseHelper.addPerson(name, dob)
+        if (isValidDate(dob)) {
+            // Date is valid, proceed with adding to the database
+            result = databaseHelper.addPerson(name, dob)
+            refreshList()
+        } else {
+            // Show error message if date is invalid
+            Toast.makeText(this,
+                "Invalid date format. Please enter a valid date.",
+                Toast.LENGTH_SHORT).show()
+            return
+        }
 
         if (result != -1L) {
             // If insert was successful, show a toast and refresh the list
-            Toast.makeText(this, "Person added successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Person added successfully",
+                Toast.LENGTH_SHORT).show()
 
             // Clear input fields
             nameInput.setText("")
@@ -111,7 +124,8 @@ class MainActivity : AppCompatActivity() {
             refreshList()
         } else {
             // If insert failed, show an error toast
-            Toast.makeText(this, "Failed to add person", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to add person",
+                Toast.LENGTH_SHORT).show()
         }
 
     nameInput.setText("")
@@ -124,10 +138,12 @@ class MainActivity : AppCompatActivity() {
 
         peopleList.forEach { (name, dob) ->
             val ageText = calculateAge(dob)
-            val birthdayFormatted =
-                dob.substring(8, 10).replaceFirst("^0+(?!$)", "") +
-                        "/" + dob.substring(5, 7).replaceFirst("^0+(?!$)", "")
-            peopleDisplayList.add(PersonEntry("$name is $ageText", birthdayFormatted))
+            val day = dob.substring(5, 7).toInt()
+            val month = dob.substring(8, 10).toInt()
+            val birthdayFormatted = "$day/$month"
+
+            peopleDisplayList.add(PersonEntry("$name is $ageText",
+                birthdayFormatted))
         }
         adapter.notifyDataSetChanged()
     }
@@ -170,7 +186,17 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Failed to delete $name", Toast.LENGTH_SHORT).show()
         }
     }
-
+    // Function to validate date format (e.g., "yyyy-MM-dd")
+    private fun isValidDate(dob: String): Boolean {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        dateFormat.isLenient = false
+        return try {
+            dateFormat.parse(dob)  // Attempt to parse the date
+            true  // Valid date
+        } catch (e: ParseException) {
+            false  // Invalid date
+        }
+    }
     private fun calculateAge(dobString: String): String {
         return try {
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
