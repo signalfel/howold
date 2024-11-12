@@ -138,8 +138,8 @@ class MainActivity : AppCompatActivity() {
 
         peopleList.forEach { (name, dob) ->
             val ageText = calculateAge(dob)
-            val day = dob.substring(5, 7).toInt()
-            val month = dob.substring(8, 10).toInt()
+            val month = dob.substring(5, 7).toInt()
+            val day = dob.substring(8, 10).toInt()
             val birthdayFormatted = "$day/$month"
 
             peopleDisplayList.add(PersonEntry("$name is $ageText",
