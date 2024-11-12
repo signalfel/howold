@@ -1,0 +1,8 @@
+<!-- res/values/strings.xml -->
+<resources>
+    <string name="app_name">HowOld</string>
+    <string name="enter_name">Enter Name of Pal</string>
+    <string name="enter_dob">Enter Date of Birth of Pal (yyyy-mm-dd)</string>
+    <string name="add_person">Add Pal</string>
+    <string name="pals">Pals</string>
+</resources>

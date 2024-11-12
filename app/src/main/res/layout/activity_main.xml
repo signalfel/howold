@@ -1,0 +1,91 @@
+<!-- res/layout/activity_main.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pals"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
+
+    <!-- SwipeRefreshLayout for pull-to-refresh functionality -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- ListView to display the list of people -->
+        <ListView
+            android:id="@+id/ageList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Floating Action Button for "Add Person" -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addPersonFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/add_person"
+        android:layout_gravity="end"
+        android:layout_margin="16dp"
+        android:tint="@color/white" />
+
+    <!-- Hidden layout for Add Person fields -->
+    <LinearLayout
+        android:id="@+id/addPersonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:background="@color/teal_700">
+
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/nameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="username"
+            android:hint="@string/enter_name"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/white"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:padding="8dp" />
+
+        <!-- Date of Birth Input -->
+        <EditText
+            android:id="@+id/dobInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="birthDateDay"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/white"
+            android:hint="@string/enter_dob"
+            android:inputType="date"
+            android:minHeight="48dp"
+            android:padding="8dp" />
+
+        <!-- Add Button -->
+        <Button
+            android:id="@+id/addPersonButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_person"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+
+
+</LinearLayout>
